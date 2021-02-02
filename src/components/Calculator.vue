@@ -62,11 +62,11 @@
                     <button class="btn btn-secondary" v-on:click="charBtn('.')">
                         .
                     </button>
-                    <button class="btn bg-green-700" id="addBtn" v-on:click="charBtn('+')">
-                        +
-                    </button>
-                    <button class="btn btn-secondary" id="divBtn" v-on:click="equals()">
+                    <button class="btn bg-green-700" id="divBtn" v-on:click="equals()">
                         =
+                    </button>
+                    <button class="btn btn-secondary" id="addBtn" v-on:click="charBtn('+')">
+                        +
                     </button>
                 </div>
             </div>
