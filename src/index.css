@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn {
+    @apply shadow-sm rounded-md text-lg text-gray-100 mx-auto h-14 w-14;
+}
+
+.btn-primary {
+    @apply bg-gray-800;
+}
+
+.btn-secondary {
+    @apply bg-gray-600;
+}
+
+.bt-small {
+    @apply mx-3 my-2 py-0;
+}

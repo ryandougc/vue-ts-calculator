@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" />
+    <title>Vue Calculator</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+    <div id="calculator">
+        <input type="text" id="numberInput" v-model="input">
+        <button id="addBtn" v-on:click="charBtn('+')">+</button>
+        <button id="subBtn" v-on:click="charBtn('-')">-</button>
+        <button id="mulBtn" v-on:click="charBtn('*')">*</button>
+        <button id="divBtn" v-on:click="charBtn('/')">/</button>
+        <button id="pOpenBtn" v-on:click="charBtn('(')">(</button>
+        <button id="pCloseBtn" v-on:click="charBtn(')')">)</button>
+        <button id="divBtn" v-on:click="equals()">=</button>
+        <div>
+            <button v-on:click="charBtn('0')">0</button>
+            <button v-on:click="charBtn('1')">1</button>
+            <button v-on:click="charBtn('2')">2</button>
+            <button v-on:click="charBtn('3')">3</button>
+            <button v-on:click="charBtn('4')">4</button>
+            <button v-on:click="charBtn('5')">5</button>
+            <button v-on:click="charBtn('6')">6</button>
+            <button v-on:click="charBtn('7')">7</button>
+            <button v-on:click="charBtn('8')">8</button>
+            <button v-on:click="charBtn('9')">9</button>
+        </div>
+
+        <div>{{ total }}</div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        const Calc = {
+            data() {
+                return {
+                    input: '',
+                    total: 0,
+                    num1: null,
+                    num2: null,
+                    nextOperation: null,
+                }
+            },
+            methods: {
+                equals() {
+                    console.log(this.input)
+                },
+                charBtn(char) {
+                    this.input = this.input + "" + char
+                }
+            }
+        }
+
+        Vue.createApp(Calc).mount('#calculator')
+    </script>
+</body>
+</html>
