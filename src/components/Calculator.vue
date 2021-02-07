@@ -86,7 +86,15 @@ export default defineComponent({
             total: '',
             num1: null,
             num2: null,
-            nextOperation: null,
+            nextOperation: null
+        }
+    },
+    computed: {
+        numOfPar() {
+            const parRegex: RegExp = /\(/g
+            const input: string = this.input
+            
+            return (input.match(parRegex) || []).length
         }
     },
     methods: {
@@ -109,30 +117,54 @@ export default defineComponent({
             this.nextOperation = null
         },
         charBtn(char: string) {
-            const reInput: RegExp = /[.0-9+\s\(\)\*\/\+\-]/
+            const reInput: RegExp = /\-*[.0-9+\s\(\)\*\/\+\-]/
 
             if(char.match(reInput)) this.input = this.input + "" + char
         }
     },
     watch: {
         input(value) {
-            const validateCharacters: RegExp = /^[0-9\+\-\/\*\(\)]*$/
-            const checkSym: RegExp = /[\+\*\/\(\)\-]{2,}$/
+            const validateCharacters    :RegExp = /^[0-9\+\-\/\*\(\)\%\^]*$/
+            const checkSym              :RegExp = /[\+\*\/\-]/
+            const checkMultiSym         :RegExp = /[\+\*\/\)\-]{2,}$/
+            const closingParRegex       :RegExp = /\)/g
+            const valueLen              :number = value.length
+            const charEnd               :string = value.charAt(valueLen-1)
+            const char2End              :string = value.charAt(valueLen-2)
 
+            // Only allow calculator related characters
             if(!value.match(validateCharacters)) {
                 this.input = value.slice(0, -1)
+                return
             }
-            if(value.match(checkSym)) {
-                if(value.charAt(value.length-2) === "(" || value.charAt(value.length-2) === ")"){
-                    this.input = value.slice(0, -1)
-                }
-                else if(value.charAt(value.length-1) === "(" || value.charAt(value.length-1) === ")"){
+
+            // Dissallow symbols except ( and - from being the first character inside parenthesis
+            if(char2End === "(" &&
+               (charEnd === ")" ||
+                charEnd === "*" ||
+                charEnd === "/" ||
+                charEnd === "+")
+            ) {
+                this.input = value.slice(0, -1)
+            }
+
+            // Only allow as many closing parenthesis as there are opening parenthesis
+            if((value.match(closingParRegex) || []).length > this.numOfPar) {
+                this.input = value.slice(0, -1)
+            }
+
+            // If there are 2 or more symbols in a row...
+            if(value.match(checkMultiSym)) {
+                if(charEnd === "("){
                     return
                 }
-                else {
-                    const newSym: number = value.slice(value.length-1, value.length)
-                    this.input = value.slice(0, -2)
-                    this.input = this.input + newSym
+                else if(char2End.match(checkSym) && charEnd === ")") {
+                    this.input = value.slice(0, -1)
+                }
+                else if(char2End !== ")") {
+                    const newSym    :number = value.slice(valueLen-1, valueLen)
+                    this.input              = value.slice(0, -2)
+                    this.input              = this.input + newSym
                 }
             }
         }
