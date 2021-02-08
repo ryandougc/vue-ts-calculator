@@ -317,4 +317,54 @@ describe('Calculator', () => {
 
         expect(c1.total).toEqual(256)
     })
+
+    it('should return the previous answer of 4 as a part of a new equation to equal 8', () => {
+        const input: string = '2 * 2'
+
+        const c1: Calculator = new Calculator(input)
+
+        c1.add(c1.ans)
+
+        expect(c1.total).toEqual(8)
+    })
+
+    it('should keep percentage sign as a modulo symbol', () => {
+        const input: string = '2 % 2'
+
+        const c1: Calculator = new Calculator(input)
+
+        expect(c1.equation).toEqual([["2", "%", "2"]])
+    })
+
+    it('should return 1 for the modulo of 5 % 2', () => {
+        const input: string = '5 % 2' 
+
+        const c1: Calculator = new Calculator(input)
+
+        expect(c1.total).toEqual(1)
+    })
+
+    it('should return -3 for the modulo of a longer equation', () => {
+        const input: string = '4 * 5 % 2 - 3' 
+
+        const c1: Calculator = new Calculator(input)
+
+        expect(c1.total).toEqual(-3)
+    })
+
+    it('should return 13 for the modulo of a bedmas equation', () => {
+        const input: string = '4 * (5 % 2 * 4) - 3' 
+
+        const c1: Calculator = new Calculator(input)
+
+        expect(c1.total).toEqual(13)
+    })
+
+    it('should return -3 for the modulo of a bedmas equation with multiplication before modulo', () => {
+        const input: string = '4 * (4 * 5 % 2 ) - 3' 
+
+        const c1: Calculator = new Calculator(input)
+
+        expect(c1.total).toEqual(-3)
+    })
 })

@@ -8,17 +8,29 @@
                 </div>
                 <input type="text" class="w-full h-12 border border-gray-300 bg-white my-6 rounded px-3 text-gray-800" id="numberInput" v-model="input">
                 <div id="buttons" class="grid grid-cols-4 gap-4 mt-2 mb-3 h-32xl">
+                    <button class="btn btn-secondary" id="ansBtn" v-on:click="ans()">
+                        Ans
+                    </button>
+                    <button class="btn btn-secondary">
+
+                    </button>
+                    <button class="btn btn-secondary" id="delBtn" v-on:click="del()">
+                        CE
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn" v-on:click="clear()">
+                        C
+                    </button>
                     <button class="btn btn-secondary" id="pOpenBtn" v-on:click="charBtn('(')">
                         (
                     </button>
                     <button class="btn btn-secondary" id="pCloseBtn" v-on:click="charBtn(')')">
                         )
                     </button>
-                    <button class="btn btn-secondary" v-on:click="del()">
-                        CE
+                    <button class="btn btn-secondary" id="moduloBtn" v-on:click="charBtn('%')">
+                        %
                     </button>
-                    <button class="btn btn-secondary" id="delBtn" v-on:click="clear()">
-                        C
+                    <button class="btn btn-secondary" id="exponentBtn" v-on:click="charBtn('^')">
+                        ^
                     </button>
                     <button class="btn btn-primary" v-on:click="charBtn('7')">
                         7
@@ -83,48 +95,65 @@ export default defineComponent({
     data() {
         return {
             input: '',
+            equation: '',
             total: '',
-            num1: null,
-            num2: null,
+            equaled: false,
             nextOperation: null
         }
     },
     computed: {
         numOfPar() {
             const parRegex: RegExp = /\(/g
-            const input: string = this.input
+            const equation: string = this.equation
             
-            return (input.match(parRegex) || []).length
+            return (equation.match(parRegex) || []).length
         }
     },
     methods: {
-        equals() {
-            const c1: Calculator = new Calculator(this.input)
+        equals(): void {
+            this.equaled = true
+
+            const c1: Calculator = new Calculator(this.equation)
 
             this.total = c1.total.toFixed(7)
 
-            console.log(typeof this.total, this.total)
             this.input = this.total
+            this.equation = this.total
         },
-        del() {
+        del(): void {
             this.input = this.input.slice(0, -1)
+            this.equation = this.equation.slice(0, -1)
         },
-        clear() {
+        clear(): void {
             this.input = ''
+            this.equation = ''
             this.total = ''
-            this.num1 = null
-            this.num2 = null
             this.nextOperation = null
         },
-        charBtn(char: string) {
-            const reInput: RegExp = /\-*[.0-9+\s\(\)\*\/\+\-]/
+        charBtn(char: string): void {
+            const reInput: RegExp = /\-*[.0-9+\s\(\)\*\/\+\%\^\-]/
 
-            if(char.match(reInput)) this.input = this.input + "" + char
+            if(this.equaled && parseInt(char)){
+                this.input = ''
+                this.equation = ''
+            }
+            this.equaled = false
+
+            if(char.match(reInput)) {
+                this.input = this.input + "" + char
+                this.equation = this.equation + "" + char
+            }
+        },
+        ans(): void {
+            console.log(this.input + "ANS")
+            this.input = this.input + "ANS"
+            this.equation = this.equation + "" + this.total
+
         }
     },
     watch: {
         input(value) {
-            const validateCharacters    :RegExp = /^[0-9\+\-\/\*\(\)\%\^]*$/
+            const validateCharacters    :RegExp = /^([0-9\+\-\/\*\(\)\%\^]*)(\bANS\b)?([0-9\+\-\/\*\(\)\%\^]*)$/
             const checkSym              :RegExp = /[\+\*\/\-]/
             const checkMultiSym         :RegExp = /[\+\*\/\)\-]{2,}$/
             const closingParRegex       :RegExp = /\)/g
@@ -135,6 +164,7 @@ export default defineComponent({
             // Only allow calculator related characters
             if(!value.match(validateCharacters)) {
                 this.input = value.slice(0, -1)
+                this.equation = value.slice(0, -1)
                 return
             }
 
@@ -146,11 +176,13 @@ export default defineComponent({
                 charEnd === "+")
             ) {
                 this.input = value.slice(0, -1)
+                this.equation = value.slice(0, -1)
             }
 
             // Only allow as many closing parenthesis as there are opening parenthesis
             if((value.match(closingParRegex) || []).length > this.numOfPar) {
                 this.input = value.slice(0, -1)
+                this.equation = value.slice(0, -1)
             }
 
             // If there are 2 or more symbols in a row...
@@ -160,11 +192,15 @@ export default defineComponent({
                 }
                 else if(char2End.match(checkSym) && charEnd === ")") {
                     this.input = value.slice(0, -1)
+                    this.equation = value.slice(0, -1)
                 }
                 else if(char2End !== ")") {
                     const newSym    :number = value.slice(valueLen-1, valueLen)
                     this.input              = value.slice(0, -2)
+                    this.equation           = value.slice(0, -2)
+
                     this.input              = this.input + newSym
+                    this.equation           = this.input + newSym
                 }
             }
         }

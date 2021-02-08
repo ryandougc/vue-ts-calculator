@@ -2,11 +2,13 @@ export default class Calculator {
     private _total: number = 0
     private _equationStr: string
     private _equation: Array<string>
+    private _ans: number
 
     constructor(input: string = '') {
         this._equationStr = input
         this._equation =  this.bedmasify(this.strToArray(this._equationStr))
         this._total = this.evaluate(this._equation)
+        this._ans = this._total
     }
 
     private strToArray(inputStr: string): Array<any> {
@@ -16,8 +18,9 @@ export default class Calculator {
         // Split input string into an array
         let inputArray: Array<string> = inputStr.split(splitRegex).filter(val => { if(val && val !== " " ) return val })
 
-        // Parse "-" into subtraction or a negative number
+        
         for(let i=0; i < inputArray.length; i++) {
+            // Parse "-" into subtraction or a negative number
             if(parseInt(inputArray[i]) < 0) {
                 if(!inputArray[i-1].match(symRegex)) {
                     let num: string = (parseInt(inputArray[i]) * -1).toString()
@@ -72,14 +75,18 @@ export default class Calculator {
         
                         j-= 1
                     } else if (workingArray[j] === "%") {
-                        workingArray[j-1] = this.percentage(workingArray[j-1])
-        
-                        workingArray.splice(j, 1)
+                        const symRegex: RegExp = /[\*\/\+\-]/
+
+                        if(!workingArray[j+1] || workingArray[j+1].match(symRegex)) {
+                            workingArray[j-1] = this.percentage(workingArray[j-1])
+            
+                            workingArray.splice(j, 1)
+                        }
                     }
                 }else if (i === 2) {
                     if(typeof workingArray[j] === 'object') {
                         continue
-                    } else if(workingArray[j].match(/^[\*\/]$/) && workingArray[j+1] !== "(") {
+                    } else if(workingArray[j].match(/^[\*\/\%]$/) && workingArray[j+1] !== "(") {
                         const lengthBeforeEquation: number = workingArray.length - (workingArray.length - j) - 1
         
                         let arrayBefore: Array<any> = workingArray.splice(0, lengthBeforeEquation)
@@ -129,6 +136,9 @@ export default class Calculator {
                 }
                 else if(nextOperation === '^') {
                     subTotal = Math.pow(subTotal, charInt)
+                }                
+                else if(nextOperation === '%') {
+                    subTotal = subTotal % charInt
                 }
 
                 nextOperation = ''
@@ -142,6 +152,10 @@ export default class Calculator {
 
     public get total(): number {
         return this._total
+    }
+
+    public get ans(): number {
+        return this._ans
     }
 
     public get equationStr(): string {
