@@ -145,10 +145,8 @@ export default defineComponent({
             }
         },
         ans(): void {
-            console.log(this.input + "ANS")
             this.input = this.input + "ANS"
             this.equation = this.equation + "" + this.total
-
         }
     },
     watch: {
