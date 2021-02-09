@@ -115,7 +115,7 @@ export default defineComponent({
 
             const c1: Calculator = new Calculator(this.equation)
 
-            this.total = c1.total.toFixed(7)
+            this.total = c1.total.toString()
 
             this.input = this.total
             this.equation = this.total
@@ -151,7 +151,7 @@ export default defineComponent({
     },
     watch: {
         input(value) {
-            const validateCharacters    :RegExp = /^([0-9\+\-\/\*\(\)\%\^]*)(\bANS\b)?([0-9\+\-\/\*\(\)\%\^]*)$/
+            const validateCharacters    :RegExp = /^([\.0-9\+\-\/\*\(\)\%\^ANS]*)$/
             const checkSym              :RegExp = /[\+\*\/\-]/
             const checkMultiSym         :RegExp = /[\+\*\/\)\-]{2,}$/
             const closingParRegex       :RegExp = /\)/g
