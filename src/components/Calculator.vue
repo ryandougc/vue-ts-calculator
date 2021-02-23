@@ -1,7 +1,7 @@
 <template>
     <div id="calc">
-        <div class="container mx-w-md pt-20">
-            <div class="bg-gray-800 w-1/4 mx-auto shadow-xl px-5 py-3 rounded-md">
+        <div class="container max-w-md">
+            <div class="bg-gray-800 mx-auto shadow-xl px-5 py-3 rounded-md">
                 <div class="flex justify-between text-gray-600">
                     <p>DouglasDesigns</p>
                     <p>c1</p>
