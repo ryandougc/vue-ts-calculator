@@ -111,13 +111,14 @@ export default defineComponent({
     },
     methods: {
         equals(): void {
+            console.log()
             this.equaled = true
 
             const c1: Calculator = new Calculator(this.equation)
 
             this.total = c1.total.toString()
 
-            this.input = this.total
+            this.input = this.sciNot(this.total)
             this.equation = this.total
         },
         del(): void {
@@ -147,11 +148,24 @@ export default defineComponent({
         ans(): void {
             this.input = this.input + "ANS"
             this.equation = this.equation + "" + this.total
+        },
+        sciNot(num: string): string {
+            const numStr: string    = num
+            const numLen: number    = num.length
+            let numSciNot: string   = ""
+
+            if(numLen > 12) {
+                numSciNot = `${numStr.slice(0, 1)}.${numStr.slice(0, 7)}e+${numLen - 1}`
+
+                return numSciNot
+            }
+
+            return num
         }
     },
     watch: {
         input(value) {
-            const validateCharacters    :RegExp = /^([\.0-9\+\-\/\*\(\)\%\^ANS]*)$/
+            const validateCharacters    :RegExp = /^([\.0-9\+\-\/\*\(\)\%\^\e\EANS]*)$/
             const checkSym              :RegExp = /[\+\*\/\-]/
             const checkMultiSym         :RegExp = /[\+\*\/\)\-]{2,}$/
             const closingParRegex       :RegExp = /\)/g
